@@ -5,7 +5,6 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from .serializers import (SectionSerializer,
                           SubSectionSerializer,
@@ -13,6 +12,7 @@ from .serializers import (SectionSerializer,
 from materials.models import Section, SubSection, Article
 
 
+# todo: add select_related to all views
 class SectionViewSet(ListModelMixin, GenericViewSet):
     serializer_class = SectionSerializer
     queryset = Section.objects.all()

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'django_filters',
+    'smart_selects',
     'materials.apps.MaterialsConfig',
     'api.apps.ApiConfig',
     'drf_spectacular',
@@ -155,6 +156,9 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+# settings for django-smart-selects
+USE_DJANGO_JQUERY = True
 
 # Reorder app names in admin
 #admin.AdminSite.get_app_list = get_app_list

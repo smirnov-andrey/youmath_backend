@@ -145,3 +145,7 @@ dmypy.json
 .history/
 /youmath/media/
 /youmath/static/
+media/
+static/
+media
+static

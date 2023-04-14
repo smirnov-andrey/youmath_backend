@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.types import OpenApiTypes
 
 from materials.models import Section, SubSection, Article
 
@@ -48,10 +49,10 @@ class SectionSerializer(ModelSerializer):
                   'subsection_exist', 'popular_subsections',
                   'popular_articles')
 
+
+    @extend_schema_field(OpenApiTypes.BOOL)
     def get_subsection_exist(self, obj):
-        return bool(
-            obj.subsections.count()
-        )
+        return bool(obj.subsections.count())
 
     @extend_schema_field(SubSectionNestedSerializer(many=True))
     def get_popular_subsections(self, obj):

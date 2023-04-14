@@ -1,5 +1,6 @@
 from django.db import models
 
+from smart_selects.db_fields import ChainedForeignKey
 
 # Create your models here.
 def article_directory_path(instance, filename):
@@ -168,14 +169,28 @@ class Article(models.Model):
         verbose_name='Раздел',
         related_name='articles'
     )
-    subsection = models.ForeignKey(
+    subsection = ChainedForeignKey(
         SubSection,
+        chained_field="section",
+        chained_model_field="section",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
         verbose_name='Подраздел',
         related_name='articles'
     )
-    # TODO: add file extention validation
+
+    # subsection = models.ForeignKey(
+    #     SubSection,
+    #     on_delete=models.PROTECT,
+    #     null=True,
+    #     verbose_name='Подраздел',
+    #     related_name='articles'
+
+    # todo: add file extention validation
     file = models.FileField(
         upload_to=article_directory_path,
         null=True,
