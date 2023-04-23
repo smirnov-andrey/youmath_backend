@@ -1,0 +1,18 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+PIDFile=/run/gunicorn/pid
+User=django-user
+Group=django-user
+RuntimeDirectory=gunicorn
+WorkingDirectory=/home/django-user/django-projects/youmath_backend/youmath
+ExecStart=/usr/local/bin/gunicorn --pid /run/gunicorn/pid --bind unix:/run/gunicorn/socket config.wsgi
+ExecReload=/bin/kill -s HUP 
+ExecStop=/bin/kill -s TERM 
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

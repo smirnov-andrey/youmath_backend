@@ -2,7 +2,7 @@ from django.db import models
 
 from smart_selects.db_fields import ChainedForeignKey
 
-# Create your models here.
+
 def article_directory_path(instance, filename):
     filebase, extention = filename.split('.')
     if instance.subsection:
@@ -14,6 +14,15 @@ def article_directory_path(instance, filename):
                 f'{instance.slug}.{extention}')
 
 
+class SectionQuerySet(models.QuerySet):
+
+    def with_counters_annotated(self):
+        return self.annotate(
+            subsections_count=models.Count('subsections', distinct=True),
+            articles_count=models.Count('articles', distinct=True)
+        )
+
+
 class Section(models.Model):
     """Модель разделов работ"""
     title = models.CharField(
@@ -22,6 +31,13 @@ class Section(models.Model):
         blank=False,
         unique=True,
         verbose_name='Название'
+    )
+    author = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        unique=False,
+        verbose_name='Автор'
     )
     slug = models.SlugField(
         max_length=50,
@@ -55,6 +71,8 @@ class Section(models.Model):
         verbose_name='Дата обновления'
     )
 
+    objects = SectionQuerySet.as_manager()
+
     def __str__(self):
         return self.title
 
@@ -62,6 +80,14 @@ class Section(models.Model):
         ordering = ('title',)
         verbose_name = 'раздел'
         verbose_name_plural = 'Разделы'
+
+
+class SubSectionQuerySet(models.QuerySet):
+
+    def with_counters_annotated(self):
+        return self.annotate(
+            articles_count=models.Count('articles', distinct=True)
+        )
 
 
 class SubSection(models.Model):
@@ -112,9 +138,10 @@ class SubSection(models.Model):
         related_name='subsections'
     )
 
+    objects = SubSectionQuerySet.as_manager()
+
     def __str__(self):
         return self.title
-            # f'{self.title} (раздел: {self.section.title})'
 
     class Meta:
         ordering = ('title',)
@@ -129,7 +156,14 @@ class Article(models.Model):
         null=False,
         blank=False,
         unique=True,
-        verbose_name='Название'
+        verbose_name='Заголовок'
+    )
+    subtitle = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        unique=False,
+        verbose_name='Подзаголовок'
     )
     slug = models.SlugField(
         max_length=50,

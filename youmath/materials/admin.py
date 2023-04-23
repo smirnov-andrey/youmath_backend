@@ -25,7 +25,7 @@ class ArticleInline(admin.TabularInline):
 
 
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'read_counter', 'is_published')
+    list_display = ('id', 'title', 'read_counter', 'is_published', )
     list_display_links = ('id', 'title')
     # list_filter = ('is_published',)
     ordering = ('id',)
@@ -53,8 +53,7 @@ class SubSectionAdmin(admin.ModelAdmin):
 class ArticleAdmin(admin.ModelAdmin):
     list_select_related = ["section", "subsection"]
     list_display = ('id', 'title', 'section', 'subsection',
-                    'read_counter',
-                    'is_published')
+                    'read_counter', 'is_published')
     list_display_links = ('id', 'title')
     # list_filter = ('is_published',)
     search_fields = ('id', 'title', 'description',
@@ -69,7 +68,7 @@ class ArticleAdmin(admin.ModelAdmin):
         (
             None,
             {
-                "fields": ["title", 'slug', 'description', 'file',
+                "fields": ["title",  'subtitle', 'slug', 'description', 'file',
                            'read_counter'],
             },
         ),
@@ -87,23 +86,6 @@ class ArticleAdmin(admin.ModelAdmin):
             },
         ),
     ]
-    # TODO add subsection field filter
-    # https://ilovedjango.com/django/admin/how-to-apply-filter-on-many-to-many-field-in-django-admin/
-
-
-    # def get_form(self, request, obj=None, **kwargs):
-    #     request.obj = obj
-    #     return super(ArticleAdmin, self).get_form(request, obj, **kwargs)
-    #
-    # def formfield_for_foreignkey(self, db_field, request, obj=None, **kwargs):
-    #     if db_field.name == "subsection":
-    #
-    #         kwargs["queryset"] = SubSection.objects.filter(
-    #             section=request.obj.section
-    #         )
-    #     return super(ArticleAdmin, self).formfield_for_foreignkey(
-    #         db_field, request, **kwargs
-    #     )
 
     def get_prepopulated_fields(self, request, obj=None):
         if obj:
