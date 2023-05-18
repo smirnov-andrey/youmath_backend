@@ -1,0 +1,443 @@
+openapi: 3.0.3
+info:
+  title: Youmath backend API
+  version: 1.0.1
+  description: Backend API для проекта youmath.ru
+
+
+servers:
+  - url: https://youmath.ru/api/v1/
+    description: Основной сервер
+  - url: http://localhost:8000/api/v1/
+    description: Локальный тестовый сервер Django
+
+tags:
+  - name: SECTIONS
+    description: Разделы
+  - name: SUBSECTIONS
+    description: Подразделы
+  - name: ARTICLES
+    description: Работы
+
+paths:
+  /articles/:
+    get:
+      operationId: api_v1_articles_list
+      summary: Получить список всех работ
+      description: Предоставляет список всех работ с фильтрацией, пагинацией и поиском
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Количество работ на страницу.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: Порядковый номер для начала отображения.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Какое поле использовать для сортировки результата.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: Строка для поиска
+        schema:
+          type: string
+      - in: query
+        name: section
+        description: Идентифкатор раздела для фильтрации
+        schema:
+          type: integer
+      - in: query
+        name: subsection
+        description: Идентифкатор подраздела для фильтрации
+        schema:
+          type: integer
+      tags:
+        - ARTICLES
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: https://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: https://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Article'
+          description: '----'
+  /articles/{id}/:
+    get:
+      operationId: api_v1_articles_retrieve
+      summary: Получить детальную информацию по работе
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный идентификатор работы.
+        required: true
+      tags:
+        - ARTICLES
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+
+
+          description: ''
+  /sections/:
+    get:
+      operationId: api_v1_sections_list
+      summary: Получить список всех разделов
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - SECTIONS
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+          description: ''
+  /sections/{id}/:
+    get:
+      operationId: api_v1_sections_retrieve
+      summary: Получить детальную информацию по разделу
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this раздел.
+        required: true
+      tags:
+      - SECTIONS
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+          description: ''
+  /sections/popular/:
+    get:
+      operationId: api_v1_sections_popular_list
+      summary: Получить список популярных разделов и работ для главной страницы
+      tags:
+      - SECTIONS
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+          description: ''
+  /subsections/:
+    get:
+      operationId: api_v1_subsections_list
+      summary: Получить список всех подразделов
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: section
+        schema:
+          type: integer
+      tags:
+      - SUBSECTIONS
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubSection_Short'
+          description: ''
+  /subsections/{id}/:
+    get:
+      operationId: api_v1_subsections_retrieve
+      summary: Получить детальную информацию по подразделу
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный идентификатор подраздела
+        required: true
+      tags:
+      - SUBSECTIONS
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subsection'
+          description: ''
+components:
+  schemas:
+    Article_Short:
+      type: object
+      description: Информация о работе / статье
+      properties:
+        id:
+          type: integer
+          title: Уникальный идетнтификатор работы
+        title:
+          type: string
+          title: Заголовок
+          maxLength: 255
+        subtitle:
+          type: string
+          nullable: true
+          title: Подзаголовок
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+          title: Описание работы / статьи
+        read_counter:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+    Article:
+      type: object
+      description: Информация о работе / статье
+      properties:
+        id:
+          type: integer
+          title: Уникальный идетнтификатор работы
+        title:
+          type: string
+          title: Заголовок
+          maxLength: 255
+        subtitle:
+          type: string
+          nullable: true
+          title: Подзаголовок
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+          title: Описание работы / статьи
+        read_counter:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Счетчик просмотров
+        file:
+          type: string
+          format: uri
+          title: Ссылка на файл с материалами работы
+    Section_Short:
+      type: object
+      description: Информация о разделе.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 100
+        author:
+          type: string
+          nullable: true
+          title: Автор
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          title: Описание
+        read_counter:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Просмотров
+        subsection_exist:
+          type: boolean
+          readOnly: true
+        subsections_count:
+          type: integer
+        articles_count:
+          type: integer
+    Section:
+      type: object
+      description: Информация о разделе со списком подразделов и работ
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 100
+        author:
+          type: string
+          nullable: true
+          title: Автор
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          title: Описание
+        read_counter:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Количество просмотров
+        subsection_exist:
+          type: boolean
+          readOnly: true
+        subsections_count:
+          type: integer
+        articles_count:
+          type: integer
+        subsections:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubSection_Short'
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article_Short'
+    SubSection_Short:
+      type: object
+      description: Информация по подразделу
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          title: Описание
+        read_counter:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Просмотров
+    Subsection:
+      type: object
+      description: Информация по подразделу с указанием количества работ
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          title: Описание
+        read_counter:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Просмотров
+        articles_count:
+          type: integer

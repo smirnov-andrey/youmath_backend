@@ -26,7 +26,7 @@ SECRET_KEY = str(os.getenv('DJ_SECRET_KEY'))
 DEBUG = str(os.getenv('DJ_DEBUG')) == 'True'
 ALLOWED_HOSTS = str(os.getenv('DJ_ALLOWED_HOSTS')).split(',')
 
-CSRF_TRUSTED_ORIGINS=['https://*.youmath.ru']
+CSRF_TRUSTED_ORIGINS = ['https://*.youmath.ru']
 
 # Application definition
 
@@ -61,7 +61,7 @@ ROOT_URLCONF = 'youmath.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,7 +135,6 @@ STATICFILES_DIRS = [
     # os.path.join(BASE_DIR, 'static'),
 ]
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -146,8 +145,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
         # 'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'PAGE_SIZE': 10
 }
 
 SPECTACULAR_SETTINGS = {
@@ -162,4 +162,4 @@ SPECTACULAR_SETTINGS = {
 USE_DJANGO_JQUERY = True
 
 # Reorder app names in admin
-#admin.AdminSite.get_app_list = get_app_list
+# admin.AdminSite.get_app_list = get_app_list

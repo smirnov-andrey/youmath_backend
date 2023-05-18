@@ -144,8 +144,5 @@ dmypy.json
 # Local History for Visual Studio Code
 .history/
 /youmath/media/
-/youmath/static/
 media/
-static/
 media
-static

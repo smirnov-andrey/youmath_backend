@@ -9,15 +9,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import (ArticleSerializer,
                           PopularSectionSerializer,
-                          PopularSubSectionSerializer,
-                          SectionSerializer,
+                          SectionListSerializer,
+                          SectionDetailSerializer,
                           SubSectionSerializer)
 from materials.models import Section, SubSection, Article
 
 
 class SectionViewSet(ListModelMixin, GenericViewSet):
     queryset = Section.objects.with_counters_annotated()
-    serializer_class = SectionSerializer
+    serializer_class = SectionListSerializer
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ('id', 'title', 'slug', 'description',
@@ -30,7 +30,7 @@ class SectionViewSet(ListModelMixin, GenericViewSet):
         )
         queryset.read_counter += 1
         queryset.save()
-        serializer = SectionSerializer(queryset)
+        serializer = SectionDetailSerializer(queryset)
         return Response(serializer.data)
 
     @action(
@@ -56,22 +56,25 @@ class SubSectionViewSet(ListModelMixin, GenericViewSet):
                        'read_counter')
 
     def retrieve(self, request, pk=None):
-        queryset = get_object_or_404(SubSection.objects.all(), pk=pk)
+        queryset = get_object_or_404(
+            SubSection.objects.with_counters_annotated(),
+            pk=pk
+        )
         queryset.read_counter += 1
         queryset.save()
         serializer = SubSectionSerializer(queryset)
         return Response(serializer.data)
 
-    @action(
-        methods=['GET'],
-        detail=False,
-        url_path=r'popular',
-        url_name='popular')
-    def popular(self, request):
-        queryset = self.filter_queryset(self.get_queryset()).order_by(
-            '-read_counter')[:3]
-        serializer = PopularSubSectionSerializer(queryset, many=True)
-        return Response(serializer.data)
+    # @action(
+    #     methods=['GET'],
+    #     detail=False,
+    #     url_path=r'popular',
+    #     url_name='popular')
+    # def popular(self, request):
+    #     queryset = self.filter_queryset(self.get_queryset()).order_by(
+    #         '-read_counter')[:3]
+    #     serializer = PopularSubSectionSerializer(queryset, many=True)
+    #     return Response(serializer.data)
 
 
 class ArticleViewSet(ListModelMixin, GenericViewSet):

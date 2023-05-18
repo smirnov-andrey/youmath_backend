@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.views.generic import TemplateView
 from django.urls import include, path, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -28,21 +29,30 @@ urlpatterns = [
     # todo: change to path
     re_path(r'^chaining/', include('smart_selects.urls')),
     path('api/', include('api.urls')),
-    path(
-        'schema/',
-        SpectacularAPIView.as_view(),
-        name='schema'
-    ),
-    path(
-        'swagger/',
-        SpectacularSwaggerView.as_view(url_name='schema'),
-        name='swagger-ui'
-    ),
-    path(
-        'redoc/',
-        SpectacularRedocView.as_view(url_name='schema'),
-        name='redoc'
-    ),
+    # path(
+    #     'api/schema/',
+    #     SpectacularAPIView.as_view(),
+    #     name='schema'
+    # ),
+    # path(
+    #     'api/swagger/',
+    #     SpectacularSwaggerView.as_view(url_name='schema'),
+    #     name='swagger-ui'
+    # ),
+    # path(
+    #     'api/redoc/',
+    #     SpectacularRedocView.as_view(url_name='schema'),
+    #     name='redoc'
+    # ),
+
+    path('swagger/', TemplateView.as_view(
+        template_name='swagger-ui.html',
+        extra_context={'schema_url': 'openapi-schema'}
+    ), name='swagger'),
+    path('redoc/', TemplateView.as_view(
+        template_name='redoc.html',
+        extra_context={'schema_url': 'openapi-schema'}
+    ), name='redoc'),
 ]
 
 if settings.DEBUG:
