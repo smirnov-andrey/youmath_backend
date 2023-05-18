@@ -190,7 +190,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Section'
+                $ref: '#/components/schemas/Section_Popular'
           description: ''
   /subsections/:
     get:
@@ -394,6 +394,43 @@ components:
           items:
             $ref: '#/components/schemas/SubSection_Short'
         articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article_Short'
+    Section_Popular:
+      type: object
+      description: Информация о разделе со списком популярных работ
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 100
+        author:
+          type: string
+          nullable: true
+          title: Автор
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          title: Описание
+        read_counter:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Количество просмотров
+        subsection_exist:
+          type: boolean
+          readOnly: true
+        subsections_count:
+          type: integer
+        articles_count:
+          type: integer
+        popular_articles:
           type: array
           items:
             $ref: '#/components/schemas/Article_Short'
