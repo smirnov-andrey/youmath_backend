@@ -1,8 +1,6 @@
 from rest_framework.serializers import (ModelSerializer,
                                         SerializerMethodField,
                                         IntegerField)
-from drf_spectacular.utils import extend_schema_field
-from drf_spectacular.types import OpenApiTypes
 
 from materials.models import Section, SubSection, Article
 
@@ -14,11 +12,21 @@ class ArticleNestedSerializer(ModelSerializer):
         fields = ('id', 'title', 'subtitle', 'description', 'read_counter')
 
 
-class SubSectionNestedSerializer(ModelSerializer):
-    """Вложенный сериализатор для отображения подразделов."""
+# class SubSectionNestedSerializer(ModelSerializer):
+#     """Вложенный сериализатор для отображения подразделов."""
+#     class Meta:
+#         model = SubSection
+#         fields = ('id', 'title', 'description', 'read_counter')
+
+
+class SubSectionSerializer(ModelSerializer):
+    """Сериализатор для отображения подразделов."""
+    articles_count = IntegerField()
+
     class Meta:
         model = SubSection
-        fields = ('id', 'title', 'description', 'read_counter')
+        fields = ('id', 'title', 'description', 'read_counter',
+                  'articles_count')
 
 
 class ArticleSerializer(ModelSerializer):
@@ -40,7 +48,6 @@ class SectionListSerializer(ModelSerializer):
         fields = ('id', 'title', 'author', 'description', 'read_counter',
                   'subsection_exist', 'subsections_count', 'articles_count')
 
-    @extend_schema_field(OpenApiTypes.BOOL)
     def get_subsection_exist(self, obj):
         return bool(obj.subsections.count())
 
@@ -64,18 +71,15 @@ class SectionDetailSerializer(ModelSerializer):
                             'subsection_exist', 'subsections_count',
                             'articles_count', 'subsections', 'articles')
 
-    @extend_schema_field(OpenApiTypes.BOOL)
     def get_subsection_exist(self, obj):
         return bool(obj.subsections.count())
 
-    @extend_schema_field(SubSectionNestedSerializer(many=True))
     def get_subsections(self, obj):
-        return SubSectionNestedSerializer(
-            obj.subsections,
+        return SubSectionSerializer(
+            obj.subsections.with_counters_annotated(),
             many=True
         ).data
 
-    @extend_schema_field(ArticleNestedSerializer(many=True))
     def get_articles(self, obj):
         return ArticleNestedSerializer(
             obj.articles,
@@ -96,11 +100,9 @@ class PopularSectionSerializer(ModelSerializer):
                   'subsection_exist', 'subsections_count', 'articles_count',
                   'popular_articles')
 
-    @extend_schema_field(OpenApiTypes.BOOL)
     def get_subsection_exist(self, obj):
         return bool(obj.subsections.count())
 
-    @extend_schema_field(ArticleNestedSerializer(many=True))
     def get_popular_articles(self, obj):
         return ArticleNestedSerializer(
             obj.articles.order_by('-read_counter')[:3],
@@ -108,11 +110,4 @@ class PopularSectionSerializer(ModelSerializer):
         ).data
 
 
-class SubSectionSerializer(ModelSerializer):
-    """Сериализатор для отображения подразделов."""
-    articles_count = IntegerField()
 
-    class Meta:
-        model = SubSection
-        fields = ('id', 'title', 'description', 'read_counter',
-                  'articles_count')

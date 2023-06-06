@@ -19,9 +19,10 @@ class SectionViewSet(ListModelMixin, GenericViewSet):
     queryset = Section.objects.with_counters_annotated()
     serializer_class = SectionListSerializer
     pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, OrderingFilter)
-    ordering_fields = ('id', 'title', 'slug', 'description',
+    filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
+    ordering_fields = ('id', 'title', 'author', 'slug', 'description',
                        'read_counter')
+    search_fields = ('title', 'author', 'slug', 'description')
 
     def retrieve(self, request, pk=None):
         queryset = get_object_or_404(
@@ -50,10 +51,11 @@ class SubSectionViewSet(ListModelMixin, GenericViewSet):
         'section')
     serializer_class = SubSectionSerializer
     pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
     filterset_fields = ('section',)
     ordering_fields = ('id', 'title', 'slug', 'description',
                        'read_counter')
+    search_fields = ('title', 'slug', 'description')
 
     def retrieve(self, request, pk=None):
         queryset = get_object_or_404(
@@ -86,9 +88,7 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
     filterset_fields = ('section', 'subsection')
     ordering_fields = ('id', 'title', 'slug', 'description',
                        'read_counter')
-    search_fields = ('title', 'subtitle', 'slug', 'description', 'content',
-                     'section__title', 'section__description',
-                     'subsection__title', 'subsection__description')
+    search_fields = ('title', 'subtitle', 'slug', 'description', 'content')
 
     def retrieve(self, request, pk=None):
         queryset = get_object_or_404(Article.objects.all(), pk=pk)

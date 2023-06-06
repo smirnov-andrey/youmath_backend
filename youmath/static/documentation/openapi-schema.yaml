@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Youmath backend API
-  version: 1.0.1
+  version: 1.0.2
   description: Backend API для проекта youmath.ru
 
 
@@ -117,19 +117,25 @@ paths:
       - name: limit
         required: false
         in: query
-        description: Number of results to return per page.
+        description: Пагинация / Количество работ на страницу.
         schema:
           type: integer
       - name: offset
         required: false
         in: query
-        description: The initial index from which to return the results.
+        description: Пагинация / Порядковый номер для начала отображения.
         schema:
           type: integer
       - name: ordering
         required: false
         in: query
-        description: Which field to use when ordering the results.
+        description: Поле для сортировки.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: Строка для поиска.
         schema:
           type: string
       tags:
@@ -168,7 +174,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this раздел.
+        description: Уникальный идентификатор раздела.
         required: true
       tags:
       - SECTIONS
@@ -200,23 +206,30 @@ paths:
       - name: limit
         required: false
         in: query
-        description: Number of results to return per page.
+        description: Пагинация - колличество позиций (результат) на странице.
         schema:
           type: integer
       - name: offset
         required: false
         in: query
-        description: The initial index from which to return the results.
+        description: Пагинация - индекс первой позиции в результативной выдачи.
         schema:
           type: integer
       - name: ordering
         required: false
         in: query
-        description: Which field to use when ordering the results.
+        description: Поле для сортировки.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: Строка для поиска.
         schema:
           type: string
       - in: query
         name: section
+        description: Идентифкатор раздела для фильтрации.
         schema:
           type: integer
       tags:
@@ -392,7 +405,7 @@ components:
         subsections:
           type: array
           items:
-            $ref: '#/components/schemas/SubSection_Short'
+            $ref: '#/components/schemas/Subsection'
         articles:
           type: array
           items:
