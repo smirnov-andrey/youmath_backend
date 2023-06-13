@@ -1,18 +1,20 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import (ArticleSerializer,
+                          ContactSerializer,
                           PopularSectionSerializer,
                           SectionListSerializer,
                           SectionDetailSerializer,
                           SubSectionSerializer)
-from materials.models import Section, SubSection, Article
+from materials.models import Contact, Section, SubSection, Article
 
 
 class SectionViewSet(ListModelMixin, GenericViewSet):
@@ -108,3 +110,9 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
     #         '-read_counter')[:10]
     #     serializer = ArticleSerializer(queryset, many=True)
     #     return Response(serializer.data)
+
+
+class ContactViewSet(CreateModelMixin, GenericViewSet):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [AllowAny]

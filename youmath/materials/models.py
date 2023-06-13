@@ -30,14 +30,14 @@ class Section(models.Model):
         null=False,
         blank=False,
         unique=True,
-        verbose_name='Название'
+        verbose_name='Заголовок'
     )
-    author = models.CharField(
+    subtitle = models.CharField(
         max_length=100,
         null=True,
         blank=True,
         unique=False,
-        verbose_name='Автор'
+        verbose_name='Подзаголовок'
     )
     slug = models.SlugField(
         max_length=50,
@@ -97,7 +97,14 @@ class SubSection(models.Model):
         null=False,
         blank=False,
         unique=True,
-        verbose_name='Название'
+        verbose_name='Заголовок'
+    )
+    subtitle = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        unique=False,
+        verbose_name='Подзаголовок'
     )
     slug = models.SlugField(
         max_length=50,
@@ -217,13 +224,6 @@ class Article(models.Model):
         related_name='articles'
     )
 
-    # subsection = models.ForeignKey(
-    #     SubSection,
-    #     on_delete=models.PROTECT,
-    #     null=True,
-    #     verbose_name='Подраздел',
-    #     related_name='articles'
-
     # todo: add file extention validation
     file = models.FileField(
         upload_to=article_directory_path,
@@ -249,3 +249,32 @@ class Article(models.Model):
 
         verbose_name = 'работа'
         verbose_name_plural = 'Работы'
+
+
+class Contact(models.Model):
+    """Модель обратной связи"""
+
+    email = models.EmailField(
+        max_length=255,
+        verbose_name='Адрес электронной почты'
+    )
+    name = models.CharField(
+        blank=True,
+        max_length=255,
+        verbose_name='Имя'
+    )
+    message = models.TextField(
+        blank=True,
+        verbose_name='Сообщение'
+    )
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата обращения'
+    )
+
+    def __str__(self):
+        return f'{self.name} - {self.email}'
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'

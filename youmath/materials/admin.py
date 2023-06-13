@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Article, Section, SubSection
+from .models import Article, Contact, Section, SubSection
 
 
 # Register your models here.
@@ -100,6 +100,21 @@ class ArticleAdmin(admin.ModelAdmin):
             return []
 
 
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('id', 'email', 'name', 'created')
+    list_display_links = ('id', 'email', 'name')
+    # list_filter = ('is_published',)
+    search_fields = ('id', 'email', 'name', 'message')
+    search_help_text = 'Поиск по email, имени или тексту сообщения'
+    ordering = ('id',)
+    actions_selection_counter = True
+    show_full_result_count = True
+    fields = ('id', 'email', 'name', 'message', 'created')
+    readonly_fields = ('id', 'email', 'name', 'message', 'created')
+
+
+admin.site.register(Article, ArticleAdmin)
+admin.site.register(Contact, ContactAdmin)
 admin.site.register(Section, SectionAdmin)
 admin.site.register(SubSection, SubSectionAdmin)
-admin.site.register(Article, ArticleAdmin)
+
