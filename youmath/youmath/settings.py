@@ -40,6 +40,18 @@ CORS_ALLOW_METHODS = (
     "POST",
 )
 
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+)
+
 # Application definition
 
 INSTALLED_APPS = [
