@@ -28,6 +28,18 @@ ALLOWED_HOSTS = str(os.getenv('DJ_ALLOWED_HOSTS')).split(',')
 
 CSRF_TRUSTED_ORIGINS = ['https://*.youmath.ru']
 
+CORS_ALLOWED_ORIGINS = [
+    "https://youmath.ru.com",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_METHODS = (
+    "GET",
+    "OPTIONS",
+    "POST",
+)
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'django_filters',
     'smart_selects',
@@ -52,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'youmath.urls'
