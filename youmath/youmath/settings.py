@@ -29,7 +29,7 @@ ALLOWED_HOSTS = str(os.getenv('DJ_ALLOWED_HOSTS')).split(',')
 CSRF_TRUSTED_ORIGINS = ['https://*.youmath.ru']
 
 CORS_ALLOWED_ORIGINS = [
-    "https://youmath.ru.com",
+    "https://youmath.ru",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]

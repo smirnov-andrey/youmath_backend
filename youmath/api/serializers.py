@@ -21,7 +21,7 @@ class SubSectionNestedSerializer(ModelSerializer):
     """Вложенный сериализатор для отображения подразделов."""
     class Meta:
         model = SubSection
-        fields = ('id', 'title', 'subtitle', 'articles_count')
+        fields = ('id', 'title', 'subtitle')
 
 
 class ArticleSerializer(ModelSerializer):
